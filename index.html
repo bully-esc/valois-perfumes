@@ -1,372 +1,1026 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valois — Perfumes de Lujo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #0f0f0f;
-  --surface: #1a1a1a;
-  --text: #f5f5f5;
-  --muted: #a0a0a0;
-  --accent: #c45c26;
-  --gold: #e8d5a3;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: #0f0f0f;
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-}
-header {
-  padding: 1.8rem 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid #2a2a2a;
-  position: sticky;
-  top: 0;
-  background: rgba(15,15,15,0.85);
-  backdrop-filter: blur(12px);
-  z-index: 50;
-}
-.logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.9rem;
-  letter-spacing: 4px;
-  font-weight: 500;
-}
-.filters {
-  padding: 1.4rem 2.5rem;
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  background: #141414;
-  border-bottom: 1px solid #2a2a2a;
-  position: sticky;
-  top: 78px;
-  z-index: 40;
-}
-.filters input, .filters select {
-  padding: 0.7rem 1rem;
-  border: 1px solid #333;
-  border-radius: 12px;
-  background: #1e1e1e;
-  color: #fff;
-  font-size: 0.9rem;
-  min-width: 160px;
-  outline: none;
-}
-.filters input:focus, .filters select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 10px rgba(196, 92, 38, 0.4);
-}
-.hero {
-  background: url('https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=2000&h=1000&fit=crop') no-repeat center/cover;
-  height: 55vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #fff;
-  position: relative;
-  z-index: 1;
-}
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: -1;
-}
-.hero h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 3.5rem;
-  font-weight: 600;
-  margin-bottom: 0.8rem;
-}
-.hero p {
-  font-size: 1rem;
-  margin-bottom: 1.6rem;
-  max-width: 600px;
-}
-.hero button {
-  padding: 1rem 2.5rem;
-  border: none;
-  border-radius: 8px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.hero button:hover {
-  background: #b04d20;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 2rem;
-  padding: 3rem 2.5rem;
-  max-width: 1450px;
-  margin: 0 auto;
-}
-.card {
-  background: #1a1a1a;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid #2a2a2a;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.6s forwards;
-  position: relative;
-  overflow: hidden;
-}
-.card img {
-  width: 100%;
-  height: 280px;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-.card:hover img {
-  transform: scale(1.05);
-}
-.card-body { padding: 1.3rem 1.4rem 1.5rem; }
-.card-body h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin: 0.3rem 0 0.2rem;
-}
-.meta { font-size: 0.8rem; color: var(--muted); }
-.badge {
-  display: inline-block;
-  background: #2a2a2a;
-  color: #ccc;
-  font-size: 0.7rem;
-  padding: 0.1rem 0.6rem;
-  border-radius: 99px;
-  margin-right: 0.3rem;
-}
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(8px);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  overflow-y: auto;
-}
-.modal.open { display: flex; }
-.modal-content {
-  background: #1a1a1a;
-  border-radius: 24px;
-  max-width: 860px;
-  width: 100%;
-  max-height: 90vh;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  border: 1px solid #333;
-  position: relative;
-  animation: modalIn 0.35s ease;
-}
-.modal-img {
-  background: #161616;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-.modal-img img { width: 100%; height: 100%; object-fit: contain; }
-.modal-info { padding: 2rem 1.8rem; overflow-y: auto; }
-.modal-info h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
-  font-weight: 500;
-  margin-bottom: 0.7rem;
-}
-.notes { margin-top: 1.2rem; font-size: 0.9rem; line-height: 1.6; color: #ddd; }
-.notes strong {
-  display: block;
-  margin-top: 0.9rem;
-  font-weight: 600;
-  font-size: 0.75rem;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-.close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: #2a2a2a;
-  border: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.close:hover {
-  background: #3a3a3a;
-  transform: scale(1.1);
-}
-footer {
-  border-top: 1px solid #2a2a2a;
-  padding: 2.5rem 1rem;
-  text-align: center;
-  color: #777;
-  font-size: 0.8rem;
-  margin-top: 3rem;
-}
-footer strong { color: var(--gold); letter-spacing: 1px; }
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
-}
-@media (max-width: 720px) {
-  .modal-content { grid-template-columns: 1fr; }
-  .filters { padding: 1rem; }
-  .grid { padding: 1.2rem; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0b0c">
+  <meta name="color-scheme" content="dark">
+  <title>Valois — Perfumes de Lujo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       1. Tokens
+       ========================================================================== */
+    :root {
+      --bg: #0b0b0c;
+      --surface: #141416;
+      --surface-2: #1b1b1e;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f5f3ef;
+      --muted: #9a9a9f;
+      --gold: #d9bf8a;
+      --accent: #c45c26;
+
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Inter', system-ui, sans-serif;
+
+      --header-h: 68px;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Vibe por defecto (perfumes sin familia reconocida) */
+      --v-accent: var(--gold);
+      --v-glow: rgba(217, 191, 138, 0.18);
+      --v-bg-a: #141416;
+      --v-bg-b: #1d1b17;
+      --v-p1: #d9bf8a;
+      --v-p2: #b89a5e;
+      --v-p3: #efe2c0;
+    }
+
+    /* ==========================================================================
+       2. Base
+       ========================================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    img { display: block; max-width: 100%; }
+
+    button { font: inherit; color: inherit; cursor: pointer; }
+
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    /* ==========================================================================
+       3. Layout: header, hero, filtros, grid, footer
+       ========================================================================== */
+    .site-header {
+      height: var(--header-h);
+      padding: 0 clamp(1rem, 4vw, 2.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 11, 12, 0.8);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: var(--font-serif);
+      font-size: 1.7rem;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      background: linear-gradient(120deg, #f5ecd5, var(--gold) 55%, #a58850);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .count { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.04em; }
+
+    .hero {
+      min-height: 52vh;
+      display: grid;
+      place-items: center;
+      padding: 4rem 1.5rem;
+      text-align: center;
+      position: relative;
+      isolation: isolate;
+      background:
+        linear-gradient(180deg, rgba(11, 11, 12, 0.45) 0%, rgba(11, 11, 12, 0.2) 40%, var(--bg) 100%),
+        url('https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=2000&h=1000&fit=crop') center / cover no-repeat,
+        var(--surface);
+    }
+
+    .hero > div { animation: rise-in 0.9s var(--ease) both; }
+
+    .eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2.3rem, 6vw, 4rem);
+      font-weight: 600;
+      line-height: 1.1;
+      margin: 0.8rem 0 1rem;
+    }
+
+    .hero p { color: #d6d3cc; max-width: 520px; margin: 0 auto 2rem; line-height: 1.6; }
+
+    .btn {
+      padding: 0.95rem 2.4rem;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      transition: background 0.3s var(--ease), transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+
+    .btn:hover {
+      background: #d46a30;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px -10px rgba(196, 92, 38, 0.7);
+    }
+
+    .filters {
+      position: sticky;
+      top: var(--header-h);
+      z-index: 40;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      padding: 1rem clamp(1rem, 4vw, 2.5rem);
+      background: rgba(20, 20, 22, 0.88);
+      backdrop-filter: blur(14px);
+      border-block: 1px solid var(--border);
+    }
+
+    .filters input,
+    .filters select {
+      flex: 1 1 170px;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+    }
+
+    .filters input { flex-basis: 240px; }
+
+    .filters input:focus,
+    .filters select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(217, 191, 138, 0.15);
+    }
+
+    .btn-reset {
+      padding: 0.75rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.85rem;
+      transition: color 0.25s, border-color 0.25s;
+    }
+
+    .btn-reset:hover { color: var(--text); border-color: var(--gold); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.6rem;
+      max-width: 1450px;
+      margin: 0 auto;
+      padding: 2.5rem clamp(1rem, 4vw, 2.5rem);
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      padding: 4rem 1rem;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .site-footer {
+      margin-top: 3rem;
+      padding: 2.5rem 1rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: #77777c;
+      font-size: 0.8rem;
+    }
+
+    .site-footer strong { color: var(--gold); letter-spacing: 0.15em; font-weight: 600; }
+
+    /* ==========================================================================
+       4. Tarjeta
+       ========================================================================== */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0;
+      animation: rise-in 0.6s var(--ease) forwards;
+      animation-delay: var(--delay, 0s);
+      transition: transform 0.35s var(--ease), border-color 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-6px);
+      border-color: color-mix(in srgb, var(--v-accent) 55%, transparent);
+      box-shadow: 0 20px 45px -20px var(--v-glow), 0 0 0 1px var(--v-glow);
+    }
+
+    .card-media {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 35%, var(--v-bg-b), var(--v-bg-a) 75%);
+    }
+
+    .card-media img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease);
+    }
+
+    .card:hover .card-media img { transform: scale(1.06); }
+
+    .card-body { padding: 1.1rem 1.3rem 1.4rem; }
+
+    .badge {
+      display: inline-block;
+      margin-right: 0.3rem;
+      padding: 0.15rem 0.65rem;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.07);
+      color: #cfcfd3;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+    }
+
+    .card-body h3 {
+      margin: 0.7rem 0 0.2rem;
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .meta { font-size: 0.8rem; color: var(--muted); }
+
+    .family {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+      font-size: 0.75rem;
+      color: var(--v-accent);
+    }
+
+    .dot {
+      flex: none;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--v-accent);
+      box-shadow: 0 0 10px var(--v-accent);
+    }
+
+    /* Frasco SVG: placeholder cuando el perfume no tiene foto */
+    .bottle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 38%;
+      transform: translate(-50%, -50%);
+      color: var(--v-accent);
+    }
+
+    .bottle .b-cap { fill: currentColor; opacity: 0.65; }
+    .bottle .b-neck { fill: currentColor; opacity: 0.35; }
+    .bottle .b-body { fill: rgba(255, 255, 255, 0.04); stroke: currentColor; stroke-opacity: 0.55; stroke-width: 1.5; }
+    .bottle .b-liquid { fill: currentColor; opacity: 0.25; }
+    .bottle .b-shine { stroke: #fff; stroke-opacity: 0.25; stroke-width: 3; stroke-linecap: round; fill: none; }
+
+    /* ==========================================================================
+       5. Vibes: paleta por familia olfativa (aplica a tarjetas y modal)
+       ========================================================================== */
+    [data-vibe='amaderado'] {   /* Bosque */
+      --v-accent: #9fc77a; --v-glow: rgba(159, 199, 122, 0.25);
+      --v-bg-a: #0c1b11; --v-bg-b: #2b1f12;
+      --v-p1: #5f8f4a; --v-p2: #8b6b3f; --v-p3: #3f6b3a;
+    }
+    [data-vibe='acuatico'] {    /* Mar */
+      --v-accent: #6cc6e8; --v-glow: rgba(108, 198, 232, 0.25);
+      --v-bg-a: #031526; --v-bg-b: #0a4a6b;
+      --v-p1: #a6e3ff; --v-p2: #6cc6e8; --v-p3: #d8f4ff;
+    }
+    [data-vibe='floral'] {      /* Flores */
+      --v-accent: #f0a3c4; --v-glow: rgba(240, 163, 196, 0.25);
+      --v-bg-a: #26101d; --v-bg-b: #4d2040;
+      --v-p1: #f7b6cf; --v-p2: #ee86ad; --v-p3: #fbd5e3;
+    }
+    [data-vibe='frutal'] {      /* Frutas */
+      --v-accent: #ff9a62; --v-glow: rgba(255, 122, 69, 0.25);
+      --v-bg-a: #2a0e17; --v-bg-b: #4d1b12;
+      --v-p1: #ff7a45; --v-p2: #e8334f; --v-p3: #b6d94a;
+    }
+    [data-vibe='oriental'] {    /* Dorado / cálido */
+      --v-accent: #e8b95a; --v-glow: rgba(232, 185, 90, 0.28);
+      --v-bg-a: #251606; --v-bg-b: #5c3b0b;
+      --v-p1: #ffd27a; --v-p2: #e8a53a; --v-p3: #fff0c2;
+    }
+    [data-vibe='citrico'] {     /* Fresco */
+      --v-accent: #cfe65a; --v-glow: rgba(207, 230, 90, 0.25);
+      --v-bg-a: #08241d; --v-bg-b: #3a4a0e;
+      --v-p1: #f4e04d; --v-p2: #b8e04a; --v-p3: #fff6a8;
+    }
+    [data-vibe='gourmand'] {    /* Vainilla / crema */
+      --v-accent: #ecd3a8; --v-glow: rgba(236, 211, 168, 0.25);
+      --v-bg-a: #271a12; --v-bg-b: #5a4129;
+      --v-p1: #f3e3c3; --v-p2: #d9b382; --v-p3: #fff7e6;
+    }
+
+    /* ==========================================================================
+       6. Modal
+       ========================================================================== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s var(--ease), visibility 0.3s;
+    }
+
+    .modal.open { visibility: visible; opacity: 1; }
+
+    .modal-content {
+      position: relative;
+      isolation: isolate;
+      width: 100%;
+      max-width: 880px;
+      max-height: 90vh;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--v-accent) 35%, transparent);
+      border-radius: 24px;
+      background: linear-gradient(145deg, var(--v-bg-a), var(--v-bg-b));
+      box-shadow: 0 30px 80px -20px #000, 0 0 80px -30px var(--v-glow);
+      transform: scale(0.95) translateY(12px);
+      transition: transform 0.4s var(--ease);
+    }
+
+    .modal.open .modal-content { transform: none; }
+
+    /* Brillo de ambiente */
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(circle at 20% 15%, var(--v-glow), transparent 55%);
+    }
+
+    .modal-media {
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+    }
+
+    .media-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.8);
+    }
+
+    .media-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+    .modal-info {
+      padding: 2.2rem 2rem 2rem 1.2rem;
+      overflow-y: auto;
+      background: linear-gradient(90deg, transparent, rgba(8, 8, 9, 0.5) 30%);
+    }
+
+    .modal-info > * { animation: rise-in 0.55s var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms + 120ms); }
+
+    .modal-info .eyebrow { color: var(--v-accent); }
+
+    .modal-info h2 {
+      margin: 0.4rem 0 0.9rem;
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 500;
+      line-height: 1.15;
+    }
+
+    .specs { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; }
+
+    .specs li {
+      padding: 0.25rem 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 99px;
+      font-size: 0.75rem;
+      color: #dcdcdf;
+    }
+
+    .vibe-tag {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 1.3rem 0 0.4rem;
+      padding: 0.7rem 1rem;
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--v-accent) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--v-accent) 30%, transparent);
+      font-size: 0.85rem;
+      color: #eee;
+    }
+
+    .vibe-tag b { color: var(--v-accent); font-weight: 600; }
+
+    .note-group { margin-top: 1.2rem; }
+
+    .note-group h4 {
+      margin-bottom: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--v-accent);
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    .chip {
+      padding: 0.3rem 0.8rem;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.82rem;
+      color: #ecebe8;
+    }
+
+    .close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 3;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(6px);
+      font-size: 1.4rem;
+      line-height: 1;
+      transition: transform 0.3s var(--ease), background 0.3s;
+    }
+
+    .close:hover { background: rgba(0, 0, 0, 0.65); transform: rotate(90deg); }
+
+    /* ==========================================================================
+       7. Capa de partículas del modal (una escena por vibe)
+       ========================================================================== */
+    .vibe-layer {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      container-type: size;
+    }
+
+    .vibe-layer i {
+      position: absolute;
+      left: var(--x);
+      width: var(--s);
+      height: var(--s);
+      opacity: var(--o);
+      animation-duration: var(--t);
+      animation-delay: var(--d);
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      will-change: transform;
+    }
+
+    /* Amaderado — hojas cayendo + troncos tenues */
+    [data-vibe='amaderado'] .vibe-layer i {
+      top: -10%;
+      height: calc(var(--s) * 0.6);
+      background: var(--c);
+      border-radius: 0 100% 0 100%;
+      animation-name: fall;
+    }
+    [data-vibe='amaderado'] .vibe-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(0deg, rgba(12, 27, 17, 0.9), transparent 45%),
+        repeating-linear-gradient(90deg, transparent 0 52px, rgba(0, 0, 0, 0.22) 52px 70px);
+    }
+
+    /* Acuático — burbujas subiendo + olas */
+    [data-vibe='acuatico'] .vibe-layer i {
+      top: 100%;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.05) 60%);
+      animation-name: rise;
+    }
+    [data-vibe='acuatico'] .vibe-layer::before,
+    [data-vibe='acuatico'] .vibe-layer::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 90px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 90' preserveAspectRatio='none'%3E%3Cpath d='M0 45 Q75 5 150 45 T300 45 T450 45 T600 45 V90 H0Z' fill='%236cc6e8'/%3E%3C/svg%3E") repeat-x;
+      background-size: 600px 90px;
+      opacity: 0.16;
+      animation: wave 14s linear infinite;
+    }
+    [data-vibe='acuatico'] .vibe-layer::after {
+      height: 70px;
+      opacity: 0.12;
+      animation-duration: 9s;
+      animation-direction: reverse;
+    }
+
+    /* Floral — pétalos cayendo */
+    [data-vibe='floral'] .vibe-layer i {
+      top: -10%;
+      height: calc(var(--s) * 1.1);
+      background: var(--c);
+      border-radius: 80% 0 80% 0;
+      animation-name: fall;
+    }
+
+    /* Frutal — frutas flotando */
+    [data-vibe='frutal'] .vibe-layer i {
+      top: var(--y);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.55), var(--c) 55%);
+      animation-name: bob;
+      animation-timing-function: ease-in-out;
+      animation-direction: alternate;
+    }
+    [data-vibe='frutal'] .vibe-layer i::after {
+      content: '';
+      position: absolute;
+      top: -18%;
+      left: 50%;
+      width: 35%;
+      height: 22%;
+      background: #7fb13c;
+      border-radius: 0 100% 0 100%;
+    }
+
+    /* Oriental / Ámbar — destellos dorados */
+    [data-vibe='oriental'] .vibe-layer i {
+      top: var(--y);
+      background: var(--c);
+      clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+      animation-name: twinkle;
+      animation-timing-function: ease-in-out;
+    }
+    [data-vibe='oriental'] .vibe-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 35%, rgba(255, 210, 122, 0.1) 50%, transparent 65%);
+      background-size: 250% 100%;
+      animation: shimmer 7s ease-in-out infinite;
+    }
+
+    /* Cítrico — rodajas burbujeando */
+    [data-vibe='citrico'] .vibe-layer i {
+      top: 100%;
+      border-radius: 50%;
+      background: repeating-conic-gradient(var(--c) 0 14deg, transparent 14deg 30deg);
+      -webkit-mask: radial-gradient(circle, transparent 26%, #000 28%);
+      mask: radial-gradient(circle, transparent 26%, #000 28%);
+      animation-name: rise;
+    }
+
+    /* Gourmand — nubes de crema a la deriva */
+    [data-vibe='gourmand'] .vibe-layer i {
+      top: var(--y);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, var(--c), transparent 70%);
+      filter: blur(6px);
+      animation-name: drift;
+      animation-timing-function: ease-in-out;
+      animation-direction: alternate;
+    }
+
+    /* ==========================================================================
+       8. Animaciones
+       ========================================================================== */
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fall {
+      0%   { transform: translate3d(0, 0, 0) rotate(0); opacity: 0; }
+      10%  { opacity: var(--o); }
+      50%  { transform: translate3d(var(--sway), 55cqh, 0) rotate(calc(var(--rot) * 0.5)); }
+      90%  { opacity: var(--o); }
+      100% { transform: translate3d(calc(var(--sway) * -1), 115cqh, 0) rotate(var(--rot)); opacity: 0; }
+    }
+
+    @keyframes rise {
+      0%   { transform: translate3d(0, 0, 0) rotate(0); opacity: 0; }
+      10%  { opacity: var(--o); }
+      50%  { transform: translate3d(var(--sway), -55cqh, 0) rotate(calc(var(--rot) * 0.5)); }
+      90%  { opacity: var(--o); }
+      100% { transform: translate3d(calc(var(--sway) * -1), -115cqh, 0) rotate(var(--rot)); opacity: 0; }
+    }
+
+    @keyframes bob {
+      from { transform: translate3d(0, 0, 0) rotate(-8deg); }
+      to   { transform: translate3d(var(--sway), -18px, 0) rotate(8deg); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: scale(0) rotate(0); opacity: 0; }
+      50%      { transform: scale(1) rotate(90deg); opacity: var(--o); }
+    }
+
+    @keyframes drift {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to   { transform: translate3d(var(--sway), -40px, 0) scale(1.25); }
+    }
+
+    @keyframes wave   { to { background-position-x: 600px; } }
+    @keyframes shimmer { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
+
+    /* ==========================================================================
+       9. Responsive y accesibilidad
+       ========================================================================== */
+    @media (max-width: 720px) {
+      :root { --header-h: 60px; }
+
+      .logo { font-size: 1.4rem; }
+      .filters { position: static; }
+      .grid { gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+
+      .modal { place-items: start center; }
+      .modal-content { grid-template-columns: 1fr; max-height: none; overflow: visible; margin: 0.5rem 0; }
+      .modal-media { padding: 1.4rem 1.4rem 0; }
+      .media-frame { max-width: 260px; margin: 0 auto; }
+      .modal-info { padding: 1.4rem; background: none; overflow: visible; }
+      .vibe-layer { border-radius: inherit; }
+    }
+
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; padding-inline: 0.8rem; }
+      .card-body { padding: 0.9rem; }
+      .card-body h3 { font-size: 0.95rem; }
+      .badge:nth-child(2) { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .vibe-layer i { display: none; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="logo">VALOIS</div>
-  <span id="count" style="font-size:0.82rem; color:#888;"></span>
-</header>
-<div class="hero">
-  <h1>Descubre Nuestros Perfumes Premium</h1>
-  <p>Calidad superior en cada aroma.</p>
-  <button onclick="scrollToFilters()">Ver Perfumes</button>
-</div>
-<div class="filters" id="filters">
-  <input type="text" id="search" placeholder="Buscar perfume o marca…">
-  <select id="filterGenero"><option value="">Todos los géneros</option></select>
-  <select id="filterConc"><option value="">Todas las concentraciones</option></select>
-  <select id="filterMarca"><option value="">Todas las marcas</option></select>
-</div>
-<div class="grid" id="grid"></div>
-<div class="modal" id="modal">
-  <button class="close" onclick="closeModal()">×</button>
-  <div class="modal-content" id="modalContent"></div>
-</div>
-<footer>
-  Powered by <strong>DUCKY QUACK ESTUDIO</strong>
-</footer>
-<script>
-const samplePerfumes = [
-  { nombre: "Sauvage Elixir", marca: "Dior", genero: "Caballero", concentracion: "Elixir", tamano: "60", familia: "Amaderado aromático", salida: "Bergamota, Especias", corazon: "Lavanda, Pimienta", fondo: "Ámbar, Madera", imagen: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=500&h=500&fit=crop" },
-  { nombre: "Libre Le Parfum", marca: "YSL", genero: "Dama", concentracion: "Parfum", tamano: "90", familia: "Floral oriental", salida: "Mandarina, Lavanda", corazon: "Flor de azahar, Jazmín", fondo: "Vainilla, Ámbar", imagen: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop" },
-  { nombre: "Acqua di Gio Profondo", marca: "Armani", genero: "Caballero", concentracion: "Eau de Parfum", tamano: "75", familia: "Acuático", salida: "Bergamota, Manzana verde", corazon: "Lavanda, Romero", fondo: "Musgo, Pachulí", imagen: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&h=500&fit=crop" },
-  { nombre: "Chance Eau Tendre", marca: "Chanel", genero: "Dama", concentracion: "Eau de Toilette", tamano: "100", familia: "Floral frutal", salida: "Pomelo, Membrillo", corazon: "Jacinto, Jazmín", fondo: "Musgo, Ámbar", imagen: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&h=500&fit=crop" }
-];
-let perfumes = samplePerfumes;
-const grid = document.getElementById('grid');
-const countEl = document.getElementById('count');
-function render(list) {
-  grid.innerHTML = '';
-  countEl.textContent = list.length + ' perfumes';
-  list.forEach((p, i) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.style.animationDelay = (i * 0.06) + 's';
-    card.innerHTML = `
-      <img src="${p.imagen}" alt="${p.nombre}" onerror="this.src='https://via.placeholder.com/300x280/1a1a1a/666?text=Perfume'">
-      <div class="card-body">
-        <div>
-          <span class="badge">${p.concentracion}</span>
-          <span class="badge">${p.genero}</span>
+  <header class="site-header">
+    <div class="logo">VALOIS</div>
+    <span class="count" id="count" aria-live="polite"></span>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Colección de perfumería</p>
+      <h1>El arte de la fragancia</h1>
+      <p>Calidad superior en cada aroma. Descubre notas, familias y mundos olfativos.</p>
+      <button class="btn" type="button" data-scroll="#filters">Ver perfumes</button>
+    </div>
+  </section>
+
+  <div class="filters" id="filters" role="search">
+    <input type="search" id="search" placeholder="Buscar perfume, marca o familia…" aria-label="Buscar perfume, marca o familia" autocomplete="off">
+    <select id="filterGenero" aria-label="Filtrar por género"></select>
+    <select id="filterConc" aria-label="Filtrar por concentración"></select>
+    <select id="filterMarca" aria-label="Filtrar por marca"></select>
+    <button class="btn-reset" id="reset" type="button" hidden>Limpiar</button>
+  </div>
+
+  <main class="grid" id="grid"></main>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+
+  <footer class="site-footer">
+    Powered by <strong>DUCKY QUACK ESTUDIO</strong>
+  </footer>
+
+  <script>
+    /* ======================================================================
+       Datos
+       Campos: nombre, marca, genero, concentracion, tamano (ml), familia,
+       salida, corazon, fondo, imagen (opcional: sin foto se muestra un frasco).
+       ====================================================================== */
+    const PERFUMES = [
+      { nombre: 'Sauvage Elixir', marca: 'Dior', genero: 'Caballero', concentracion: 'Elixir', tamano: '60', familia: 'Amaderado aromático', salida: 'Bergamota, Especias', corazon: 'Lavanda, Pimienta', fondo: 'Ámbar, Madera', imagen: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?w=500&h=500&fit=crop' },
+      { nombre: 'Libre Le Parfum', marca: 'YSL', genero: 'Dama', concentracion: 'Parfum', tamano: '90', familia: 'Floral oriental', salida: 'Mandarina, Lavanda', corazon: 'Flor de azahar, Jazmín', fondo: 'Vainilla, Ámbar', imagen: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop' },
+      { nombre: 'Acqua di Gio Profondo', marca: 'Armani', genero: 'Caballero', concentracion: 'Eau de Parfum', tamano: '75', familia: 'Acuático', salida: 'Bergamota, Manzana verde', corazon: 'Lavanda, Romero', fondo: 'Musgo, Pachulí', imagen: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&h=500&fit=crop' },
+      { nombre: 'Chance Eau Tendre', marca: 'Chanel', genero: 'Dama', concentracion: 'Eau de Toilette', tamano: '100', familia: 'Floral frutal', salida: 'Pomelo, Membrillo', corazon: 'Jacinto, Jazmín', fondo: 'Musgo, Ámbar', imagen: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&h=500&fit=crop' },
+      { nombre: 'Terre d\'Hermès', marca: 'Hermès', genero: 'Caballero', concentracion: 'Eau de Toilette', tamano: '100', familia: 'Amaderado cítrico', salida: 'Naranja, Pomelo', corazon: 'Pimienta, Pedernal', fondo: 'Vetiver, Cedro, Benjuí' },
+      { nombre: 'Light Blue', marca: 'Dolce & Gabbana', genero: 'Dama', concentracion: 'Eau de Toilette', tamano: '100', familia: 'Acuático cítrico', salida: 'Limón siciliano, Manzana', corazon: 'Bambú, Jazmín, Rosa blanca', fondo: 'Cedro, Ámbar, Almizcle' },
+      { nombre: 'Flowerbomb', marca: 'Viktor & Rolf', genero: 'Dama', concentracion: 'Eau de Parfum', tamano: '100', familia: 'Floral', salida: 'Té, Bergamota', corazon: 'Jazmín, Orquídea, Rosa, Freesia', fondo: 'Pachulí, Almizcle' },
+      { nombre: 'Bright Crystal', marca: 'Versace', genero: 'Dama', concentracion: 'Eau de Toilette', tamano: '90', familia: 'Frutal floral', salida: 'Yuzu, Granada, Champaña', corazon: 'Peonía, Magnolia, Loto', fondo: 'Almizcle, Ámbar, Caoba' },
+      { nombre: 'Aventus', marca: 'Creed', genero: 'Caballero', concentracion: 'Eau de Parfum', tamano: '100', familia: 'Frutal amaderado', salida: 'Piña, Bergamota, Manzana', corazon: 'Abedul, Pachulí, Jazmín', fondo: 'Almizcle, Musgo de roble, Ámbar gris' },
+      { nombre: 'Oud Wood', marca: 'Tom Ford', genero: 'Unisex', concentracion: 'Eau de Parfum', tamano: '50', familia: 'Oriental amaderado', salida: 'Palo de rosa, Cardamomo', corazon: 'Oud, Sándalo, Vetiver', fondo: 'Ámbar, Haba tonka, Vainilla' },
+      { nombre: 'Colonia', marca: 'Acqua di Parma', genero: 'Unisex', concentracion: 'Eau de Cologne', tamano: '100', familia: 'Cítrico aromático', salida: 'Limón, Naranja, Bergamota', corazon: 'Lavanda, Romero, Verbena', fondo: 'Vetiver, Sándalo, Pachulí' },
+      { nombre: 'La Vie Est Belle', marca: 'Lancôme', genero: 'Dama', concentracion: 'Eau de Parfum', tamano: '75', familia: 'Gourmand floral', salida: 'Grosella negra, Pera', corazon: 'Iris, Jazmín, Flor de azahar', fondo: 'Praliné, Vainilla, Pachulí, Haba tonka' }
+    ];
+
+    /* ======================================================================
+       Vibes por familia olfativa
+       La familia se resuelve por la primera palabra clave que aparece en el
+       texto (p. ej. "Floral oriental" → Floral). Los estilos viven en el CSS
+       bajo [data-vibe="<key>"]; aquí solo se define el nombre de la escena y
+       la densidad de partículas.
+       ====================================================================== */
+    const VIBES = [
+      { key: 'amaderado', scene: 'Bosque',           keywords: ['amaderad'],         count: 14, size: [10, 22],  dur: 14 },
+      { key: 'acuatico',  scene: 'Mar',              keywords: ['acuatic', 'marin'], count: 16, size: [6, 20],   dur: 12 },
+      { key: 'floral',    scene: 'Jardín en flor',   keywords: ['flor'],             count: 14, size: [10, 20],  dur: 13 },
+      { key: 'frutal',    scene: 'Huerto',           keywords: ['frut'],             count: 10, size: [18, 34],  dur: 7  },
+      { key: 'oriental',  scene: 'Oro cálido',       keywords: ['orient', 'ambar'],  count: 18, size: [6, 16],   dur: 5  },
+      { key: 'citrico',   scene: 'Frescura cítrica', keywords: ['citric', 'hesperid'], count: 12, size: [14, 30], dur: 9 },
+      { key: 'gourmand',  scene: 'Vainilla y crema', keywords: ['gourmand', 'vainill'], count: 7, size: [60, 130], dur: 18 }
+    ];
+
+    const DEFAULT_VIBE = { key: 'default', scene: '', count: 0 };
+
+    const FILTERS = [
+      { id: 'filterGenero', key: 'genero',        all: 'Todos los géneros' },
+      { id: 'filterConc',   key: 'concentracion', all: 'Todas las concentraciones' },
+      { id: 'filterMarca',  key: 'marca',         all: 'Todas las marcas' }
+    ];
+
+    /* ======================================================================
+       Utilidades
+       ====================================================================== */
+    const $ = id => document.getElementById(id);
+
+    const normalize = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+    const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ESCAPES[c]);
+
+    const unique = (list, key) =>
+      [...new Set(list.map(p => p[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+
+    const rand = (min, max) => min + Math.random() * (max - min);
+
+    function resolveVibe(familia) {
+      const text = normalize(familia);
+      let best = null;
+      for (const vibe of VIBES) {
+        for (const kw of vibe.keywords) {
+          const at = text.indexOf(kw);
+          if (at !== -1 && (!best || at < best.at)) best = { vibe, at };
+        }
+      }
+      return best ? best.vibe : DEFAULT_VIBE;
+    }
+
+    /* Se enriquece cada perfume una sola vez: id, vibe y texto de búsqueda. */
+    const perfumes = PERFUMES.map((p, id) => ({
+      ...p,
+      id,
+      vibe: resolveVibe(p.familia),
+      haystack: normalize([p.nombre, p.marca, p.familia].join(' '))
+    }));
+
+    /* ======================================================================
+       Plantillas
+       ====================================================================== */
+    const BOTTLE_SVG = `
+      <svg class="bottle" viewBox="0 0 120 160" aria-hidden="true">
+        <rect class="b-cap" x="46" y="8" width="28" height="22" rx="4"/>
+        <rect class="b-neck" x="54" y="30" width="12" height="10"/>
+        <rect class="b-body" x="22" y="40" width="76" height="108" rx="16"/>
+        <rect class="b-liquid" x="30" y="86" width="60" height="54" rx="10"/>
+        <path class="b-shine" d="M34 54v60"/>
+      </svg>`;
+
+    const photo = p => (p.imagen ? `<img src="${esc(p.imagen)}" alt="${esc(p.nombre)}" loading="lazy">` : '');
+
+    function cardTemplate(p, i) {
+      return `
+        <article class="card" data-id="${p.id}" data-vibe="${p.vibe.key}" tabindex="0" role="button"
+                 aria-label="Ver detalles de ${esc(p.nombre)}" style="--delay:${Math.min(i, 12) * 45}ms">
+          <div class="card-media">${BOTTLE_SVG}${photo(p)}</div>
+          <div class="card-body">
+            <div><span class="badge">${esc(p.concentracion)}</span><span class="badge">${esc(p.genero)}</span></div>
+            <h3>${esc(p.nombre)}</h3>
+            <p class="meta">${esc(p.marca)} · ${esc(p.tamano)} ml</p>
+            <p class="family"><span class="dot"></span>${esc(p.familia)}</p>
+          </div>
+        </article>`;
+    }
+
+    function particlesTemplate(vibe) {
+      const [minS, maxS] = vibe.size || [0, 0];
+      let html = '';
+      for (let i = 0; i < vibe.count; i++) {
+        const style = [
+          `--x:${rand(0, 96).toFixed(1)}%`,
+          `--y:${rand(5, 90).toFixed(1)}%`,
+          `--s:${rand(minS, maxS).toFixed(1)}px`,
+          `--t:${(vibe.dur * rand(0.7, 1.3)).toFixed(1)}s`,
+          `--d:${(-rand(0, vibe.dur)).toFixed(1)}s`,
+          `--sway:${rand(-40, 40).toFixed(0)}px`,
+          `--rot:${rand(-270, 270).toFixed(0)}deg`,
+          `--o:${rand(0.35, 0.85).toFixed(2)}`,
+          `--c:var(--v-p${(i % 3) + 1})`
+        ].join(';');
+        html += `<i style="${style}"></i>`;
+      }
+      return html;
+    }
+
+    function noteGroup(title, notes, order) {
+      const chips = String(notes ?? '').split(',').map(n => n.trim()).filter(Boolean)
+        .map(n => `<span class="chip">${esc(n)}</span>`).join('');
+      return chips ? `<div class="note-group" style="--i:${order}"><h4>${title}</h4><div class="chips">${chips}</div></div>` : '';
+    }
+
+    function modalTemplate(p) {
+      const scene = p.vibe.scene ? `<b>${esc(p.vibe.scene)}</b> · ` : '';
+      return `
+        <div class="vibe-layer" aria-hidden="true">${particlesTemplate(p.vibe)}</div>
+        <button class="close" type="button" data-close aria-label="Cerrar">×</button>
+        <div class="modal-media">
+          <div class="media-frame">${BOTTLE_SVG}${photo(p)}</div>
         </div>
-        <h3>${p.nombre}</h3>
-        <div class="meta">${p.marca} · ${p.tamano} ml</div>
-      </div>
-    `;
-    card.onclick = () => openModal(p);
-    grid.appendChild(card);
-  });
-}
-function openModal(p) {
-  document.getElementById('modalContent').innerHTML = `
-    <div class="modal-img">
-      <img src="${p.imagen}" alt="${p.nombre}">
-    </div>
-    <div class="modal-info">
-      <h2>${p.nombre}</h2>
-      <p style="color:#aaa; font-size:0.85rem; margin:0.5rem 0 1.2rem;">${p.marca} · ${p.concentracion} · ${p.genero} · ${p.tamano} ml</p>
-      <div class="notes">
-        <strong>Familia olfativa</strong> ${p.familia}
-        <strong>Notas de salida</strong> ${p.salida}
-        <strong>Notas de corazón</strong> ${p.corazon}
-        <strong>Notas de fondo</strong> ${p.fondo}
-      </div>
-    </div>
-  `;
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-document.getElementById('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); };
-function unique(arr, key) {
-  return [...new Set(arr.map(p => p[key]).filter(Boolean))].sort();
-}
-function fillSelect(id, options, current, def) {
-  const el = document.getElementById(id);
-  el.innerHTML = `<option value="">${def}</option>`;
-  options.forEach(v => {
-    const o = document.createElement('option');
-    o.value = v; o.textContent = v;
-    el.appendChild(o);
-  });
-  if (current && options.includes(current)) el.value = current;
-  else el.value = '';
-}
-function updateFilters() {
-  const generoSel = document.getElementById('filterGenero').value;
-  const concSel = document.getElementById('filterConc').value;
-  const marcaSel = document.getElementById('filterMarca').value;
-  const q = document.getElementById('search').value.toLowerCase();
-  let base = perfumes.filter(p => {
-    const t = ((p.nombre||'') + ' ' + (p.marca||'')).toLowerCase();
-    return !q || t.includes(q);
-  });
-  fillSelect('filterGenero', unique(base, 'genero'), generoSel, 'Todos los géneros');
-  const genero = document.getElementById('filterGenero').value;
-  let afterG = base.filter(p => !genero || p.genero === genero);
-  fillSelect('filterConc', unique(afterG, 'concentracion'), concSel, 'Todas las concentraciones');
-  const conc = document.getElementById('filterConc').value;
-  let afterC = afterG.filter(p => !conc || p.concentracion === conc);
-  fillSelect('filterMarca', unique(afterC, 'marca'), marcaSel, 'Todas las marcas');
-  const marca = document.getElementById('filterMarca').value;
-  render(afterC.filter(p => !marca || p.marca === marca));
-}
-function loadData() {
-  updateFilters();
-}
-['search','filterGenero','filterConc','filterMarca'].forEach(id => {
-  document.getElementById(id).addEventListener('input', updateFilters);
-  document.getElementById(id).addEventListener('change', updateFilters);
-});
-function scrollToFilters() {
-  document.getElementById('filters').scrollIntoView({ behavior: 'smooth' });
-}
-loadData();
-</script>
+        <div class="modal-info">
+          <p class="eyebrow" style="--i:0">${esc(p.marca)}</p>
+          <h2 id="modalTitle" style="--i:1">${esc(p.nombre)}</h2>
+          <ul class="specs" style="--i:2">
+            <li>${esc(p.concentracion)}</li><li>${esc(p.genero)}</li><li>${esc(p.tamano)} ml</li>
+          </ul>
+          <div class="vibe-tag" style="--i:3"><span class="dot"></span><span>${scene}${esc(p.familia)}</span></div>
+          ${noteGroup('Notas de salida', p.salida, 4)}
+          ${noteGroup('Notas de corazón', p.corazon, 5)}
+          ${noteGroup('Notas de fondo', p.fondo, 6)}
+        </div>`;
+    }
+
+    /* ======================================================================
+       Catálogo
+       ====================================================================== */
+    const grid = $('grid');
+    const search = $('search');
+
+    function render(list) {
+      const n = list.length;
+      $('count').textContent = `${n} ${n === 1 ? 'perfume' : 'perfumes'}`;
+      grid.innerHTML = n
+        ? list.map(cardTemplate).join('')
+        : '<p class="empty">No encontramos perfumes con esos filtros.</p>';
+    }
+
+    /* ======================================================================
+       Filtros en cascada: búsqueda → género → concentración → marca.
+       Cada select solo ofrece opciones disponibles tras los filtros previos.
+       ====================================================================== */
+    function fillSelect(el, options, defaultLabel) {
+      const current = el.value;
+      el.innerHTML = `<option value="">${defaultLabel}</option>` +
+        options.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+      el.value = options.includes(current) ? current : '';
+    }
+
+    function updateFilters() {
+      const q = normalize(search.value.trim());
+      let pool = perfumes.filter(p => !q || p.haystack.includes(q));
+      let active = Boolean(q);
+
+      for (const { id, key, all } of FILTERS) {
+        const el = $(id);
+        fillSelect(el, unique(pool, key), all);
+        if (el.value) {
+          pool = pool.filter(p => p[key] === el.value);
+          active = true;
+        }
+      }
+
+      $('reset').hidden = !active;
+      render(pool);
+    }
+
+    function resetFilters() {
+      search.value = '';
+      FILTERS.forEach(({ id }) => { $(id).value = ''; });
+      updateFilters();
+    }
+
+    /* ======================================================================
+       Modal
+       ====================================================================== */
+    const modal = $('modal');
+    let lastFocus = null;
+
+    function openModal(p, trigger) {
+      lastFocus = trigger;
+      const content = $('modalContent');
+      content.dataset.vibe = p.vibe.key;
+      content.innerHTML = modalTemplate(p);
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('modal-open');
+      content.querySelector('.close').focus({ preventScroll: true });
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('modal-open');
+      lastFocus?.focus({ preventScroll: true });
+    }
+
+    modal.addEventListener('click', e => {
+      if (e.target === modal || e.target.closest('[data-close]')) closeModal();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!modal.classList.contains('open')) return;
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Tab') {            // único elemento enfocable: el botón de cerrar
+        e.preventDefault();
+        modal.querySelector('.close').focus();
+      }
+    });
+
+    /* ======================================================================
+       Eventos
+       ====================================================================== */
+    function openFromCard(card) {
+      if (card) openModal(perfumes[card.dataset.id], card);
+    }
+
+    grid.addEventListener('click', e => openFromCard(e.target.closest('.card')));
+
+    grid.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openFromCard(e.target.closest('.card'));
+      }
+    });
+
+    /* Si una foto falla, se quita y queda el frasco SVG de fondo. */
+    document.addEventListener('error', e => {
+      if (e.target.tagName === 'IMG') e.target.remove();
+    }, true);
+
+    search.addEventListener('input', updateFilters);
+    FILTERS.forEach(({ id }) => $(id).addEventListener('change', updateFilters));
+    $('reset').addEventListener('click', resetFilters);
+
+    document.querySelectorAll('[data-scroll]').forEach(btn =>
+      btn.addEventListener('click', () =>
+        document.querySelector(btn.dataset.scroll).scrollIntoView({ behavior: 'smooth' })));
+
+    updateFilters();
+  </script>
 </body>
 </html>
